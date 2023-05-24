@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+   http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <changeSet author="dainiusarmonas" id="users_table">
+        <createTable tableName="users">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <sql>
+            INSERT INTO users (id, name)
+            VALUES ('7039d06c-0fff-4c76-9b3c-aef6db28d63b', 'John Doe');
+        </sql>
+    </changeSet>
+
+    <changeSet author="dainiusarmonas" id="publishers_table">
+        <createTable tableName="publishers">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="title" type="VARCHAR">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createIndex unique="true" tableName="publishers" indexName="unq_idx_publishers_title">
+            <column name="title"/>
+        </createIndex>
+        <sql>
+            INSERT INTO publishers (id, title)
+            VALUES ('7039d06c-0fff-4c76-9b3c-aef6db28d63c', 'Rockstar Games');
+        </sql>
+    </changeSet>
+
+    <changeSet author="dainiusarmonas" id="games_table">
+        <createTable tableName="games">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="user_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="publisher_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="title" type="VARCHAR">
+                <constraints nullable="false"/>
+            </column>
+            <column name="sales_count" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createIndex tableName="games" indexName="idx_games_user_id">
+            <column name="user_id"/>
+        </createIndex>
+        <createIndex tableName="games" indexName="idx_publishers_user_id">
+            <column name="publisher_id"/>
+        </createIndex>
+        <addForeignKeyConstraint baseTableName="games" baseColumnNames="user_id"
+                                 referencedTableName="users" referencedColumnNames="id"
+                                 constraintName="fk_games_user_id"/>
+        <addForeignKeyConstraint baseTableName="games" baseColumnNames="publisher_id"
+                                 referencedTableName="publishers" referencedColumnNames="id"
+                                 constraintName="fk_games_publisher_id"/>
+    </changeSet>
+
+    <changeSet author="dainiusarmonas" id="likes_table">
+        <createTable tableName="likes">
+            <column name="user_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="game_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addPrimaryKey tableName="likes" columnNames="game_id, user_id"/>
+        <addForeignKeyConstraint baseTableName="likes" baseColumnNames="user_id"
+                                 referencedTableName="users" referencedColumnNames="id"
+                                 constraintName="fk_likes_user_id"/>
+        <addForeignKeyConstraint baseTableName="likes" baseColumnNames="game_id"
+                                 referencedTableName="games" referencedColumnNames="id"
+                                 constraintName="fk_likes_game_id"/>
+    </changeSet>
+</databaseChangeLog>

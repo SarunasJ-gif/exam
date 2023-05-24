@@ -1,0 +1,27 @@
+spring:
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: org.h2.Driver
+    password: ''
+    url: jdbc:h2:file:./8saf
+    username: sa
+  h2:
+    console:
+      enabled: true
+      path: /h2
+  liquibase:
+    enabled: true
+    changelog: classpath:db/changelog/db.changelog-master.xml
+
+logging:
+  level:
+    root: INFO
+
+mybatis:
+  type-handlers-package: com.dbg.api.config.mybatis
+  type-aliases-package: com.dbg.api.config.mybatis
+  configuration:
+    map-underscore-to-camel-case: 'true'
+
+server:
+  port: 9090
